@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git checkout') {
+            steps {
+               git 'https://github.com/tkibnyusuf/xcombaba-project.git'
+            }
+        }
+       stage('Build') {
+            steps {
+               sh ''' cd MywebApp && mvn clean package'''
+            }
+        }
+      stage('Test') {
+            steps {
+                sh ' cd MywebApp && mvn test'
+
+            }
+      }          
+                
+      stage('deploy to tomcat') {
+            steps {
+                deploy adapters: [tomcat9(credentialsId: 'ed967c68-5b1f-43b7-aac4-ae1243fedd46', path: '', url: 'http://52.90.174.21:8080/')], contextPath: 'path', war: '**/*.war'
+                
+            }   
+                
+      }        
+                
+    }
+}  
